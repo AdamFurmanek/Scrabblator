@@ -9,21 +9,24 @@ namespace Scrabblator
 
         string[,] bonusyMapy;
         Dictionary<char, int[]> bonusyLiter;
+        List<int> bonusyDoku;
         String[,] nowaPlansza;
         int[,] uklad;
 
         int wynik, wynikKomorki, mnoznik;
 
-        public Kalkulator(string[,] bm, Dictionary<char, int[]> bl)
+        public Kalkulator(string[,] bm, Dictionary<char, int[]> bl, List<int> bd)
         {
             bonusyMapy = bm;
             bonusyLiter = bl;
+            bonusyDoku = bd;
         }
         public int oblicz(String[,] nowaPlansza, int[,] uklad, bool poziomo)
         {
             this.nowaPlansza = nowaPlansza;
             this.uklad = uklad;
             wynik = 0;
+            int nowychLiter = 0;
             bool pierwszaKomorka = true;
             for (int i = 0; i < uklad.GetUpperBound(0) + 1; i++)
             {
@@ -31,6 +34,7 @@ namespace Scrabblator
                 {
                     if (uklad[i, j] == 1)
                     {
+                        nowychLiter++;
                         if (pierwszaKomorka) {
                             wynik += obliczKomorkePoziomo(i, j);
                             wynik += obliczKomorkePionowo(i, j);
@@ -47,7 +51,7 @@ namespace Scrabblator
                 }
             }
 
-            return wynik;
+            return wynik+bonusyDoku[nowychLiter-1];
         }
 
         public void obliczBonus(int i, int j)

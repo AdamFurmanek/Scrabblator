@@ -10,6 +10,7 @@ namespace Scrabblator
 
         public string[,] bonusyMapy;
         public Dictionary<char, int[]> bonusyLiter;
+        public List<int> bonusyDoku;
         public List<string> dok;
         public string[,] plansza;
 
@@ -22,10 +23,11 @@ namespace Scrabblator
             slownik = new Trie(path);
         }
 
-        public void ustaw(string[,] bM, Dictionary<char, int[]> bL)
+        public void ustaw(string[,] bM, Dictionary<char, int[]> bL, List<int> bD)
         {
             bonusyMapy = bM;
             bonusyLiter = bL;
+            bonusyDoku = bD;
         }
 
         public void scrabbluj(string[,] p, List<string> d)
@@ -42,7 +44,7 @@ namespace Scrabblator
         {
             kontynuuj = true;
             List<List<char[]>> twory = new Wariator(dok).wariacja();
-            new Generator(bonusyMapy, bonusyLiter, plansza, dok, twory, slownik, this).generuj();
+            new Generator(bonusyMapy, bonusyLiter, bonusyDoku, plansza, dok, twory, slownik, this).generuj();
 
         }
 
@@ -111,6 +113,15 @@ namespace Scrabblator
             bonusyLiter.Add('ź', typ4);
             bonusyLiter.Add('ż', typ4);
 
+            List<int> bonusyDoku = new List<int>();
+            bonusyDoku.Add(0);
+            bonusyDoku.Add(0);
+            bonusyDoku.Add(0);
+            bonusyDoku.Add(0);
+            bonusyDoku.Add(0);
+            bonusyDoku.Add(0);
+            bonusyDoku.Add(25);
+
             //TESTY
             char[,] plansza0 =
             {
@@ -145,15 +156,15 @@ namespace Scrabblator
                 }
             }
 
-            char[] dok0 = { 'c', 's', 'o', 'o', 'a'};
+            char[] dok0 = { 'e', 'n', 'e', 'r', 'g', 'i', 'a' };
 
-        List<string> dok = new List<string>();
+            List<string> dok = new List<string>();
 
             for (int i = 0; i < dok0.Length; i++)
                 dok.Add("a" + dok0[i]);
 
             Scrabblator scrabblator = new Scrabblator(@"..\..\..\Resources\Slownik.txt");
-            scrabblator.ustaw(bonusyMapy, bonusyLiter);
+            scrabblator.ustaw(bonusyMapy, bonusyLiter, bonusyDoku);
             scrabblator.scrabbluj(plansza,dok);
         }
 

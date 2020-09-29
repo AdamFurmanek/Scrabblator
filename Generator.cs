@@ -23,9 +23,9 @@ namespace Scrabblator
         String[,] najlepszaPlansza;
         int najlepszyWynik;
 
-        public Generator(string[,] bM, Dictionary<char, int[]> bL, string[,] p, List<String> d, List<List<char[]>> t, Trie trie,  Scrabblator s)
+        public Generator(string[,] bM, Dictionary<char, int[]> bL, List<int> bD, string[,] p, List<String> d, List<List<char[]>> t, Trie trie,  Scrabblator s)
         {
-            kalkulator = new Kalkulator(bM, bL);
+            kalkulator = new Kalkulator(bM, bL, bD);
             plansza = p;
             dok = d;
             twory = t;
