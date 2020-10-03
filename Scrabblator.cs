@@ -1,5 +1,9 @@
-﻿using System;
+﻿using OfficeOpenXml;
+using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Text;
 using System.Threading;
 
 namespace Scrabblator
@@ -45,7 +49,7 @@ namespace Scrabblator
             kontynuuj = true;
             List<List<char[]>> twory = new Wariator(dok).wariacja();
             new Generator(bonusyMapy, bonusyLiter, bonusyDoku, plansza, dok, twory, slownik, this).generuj();
-
+            Console.WriteLine("Scrabblowanie zakończone. Naciśnij Enter aby kontynuować...");
         }
 
         public void zatrzymaj()
@@ -120,52 +124,54 @@ namespace Scrabblator
             bonusyDoku.Add(0);
             bonusyDoku.Add(0);
             bonusyDoku.Add(0);
-            bonusyDoku.Add(25);
+            bonusyDoku.Add(50);
 
-            //TESTY
-            char[,] plansza0 =
-            {
-                {'.', '.', 'p', '.', '.', 't', '.', '.', '.', '.', '.', '.', 'z', '.', '.'},
-                {'.', '.', 'ą', '.', 't', 'a', 'ś', '.', '.', '.', '.', '.', 'ł', '.', '.'},
-                {'w', 'a', 's', 'z', 'e', 'j', '.', '.', '.', '.', '.', 't', 'a', 'n', 'i'},
-                {'.', '.', 'y', '.', 'g', '.', '.', '.', 'm', 'n', 'i', 'e', 'j', '.', '.'},
-                {'.', '.', '.', 'p', 'o', 's', 'i', 'l', 'ę', '.', '.', 'm', 'a', 'ź', '.'},
-                {'k', 'a', 'c', 'a', '.', '.', 'l', 'u', '.', '.', '.', 'b', '.', '.', '.'},
-                {'.', 'ż', 'o', 'n', '.', '.', 'u', 'd', '.', '.', '.', 'r', '.', 's', '.'},
-                {'.', '.', '.', 'n', '.', '.', '.', 'z', '.', 'w', 'ł', 'ó', 'k', 'a', '.'},
-                {'.', '.', 'g', 'i', 'l', '.', '.', 'i', '.', '.', '.', 'w', 'e', 'ń', '.'},
-                {'d', 'b', 'a', 'c', 'i', 'e', '.', 'e', '.', '.', '.', '.', 'r', '.', '.'},
-                {'o', '.', '.', 'a', 'd', '.', '.', '.', 'h', 'a', 's', 'h', 'y', '.', '.'},
-                {'m', '.', '.', '.', 'e', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.'},
-                {'i', '.', '.', 'p', 'r', 'z', 'y', 'w', 'r', 'o', '.', '.', '.', '.', '.'},
-                {'e', '.', '.', '.', 'y', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.'},
-                {'.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.'}
-            };
+            List<string> dok;
+            string[,] plansza;
 
-            string[,] plansza = new string[15, 15];
-            for(int i = 0; i < 15; i++)
-            {
-                for(int j = 0; j < 15; j++)
-                {
-                    if (plansza0[i, j] == '.')
-                    {
-                        plansza[i, j] = "pb";
-                    }
-                    else
-                        plansza[i, j] = "a" + plansza0[i, j];
-                }
-            }
-
-            char[] dok0 = { 'e', 'n', 'e', 'r', 'g', 'i', 'a' };
-
-            List<string> dok = new List<string>();
-
-            for (int i = 0; i < dok0.Length; i++)
-                dok.Add("a" + dok0[i]);
-
+            Console.WriteLine("Wczytuję słownik...");
             Scrabblator scrabblator = new Scrabblator(@"..\..\..\Resources\Slownik.txt");
             scrabblator.ustaw(bonusyMapy, bonusyLiter, bonusyDoku);
-            scrabblator.scrabbluj(plansza,dok);
+            while (true)
+            {
+
+                Console.Clear();
+                Console.WriteLine("Naciśnij Enter aby rozpocząć scrabblowanie...\nPamiętaj, że arkusz Excela musi być zapisany przed rozpoczęciem.\nScrabblowanie można przerwać w dowolnym momencie naciskając Enter.");
+                Console.ReadLine();
+
+                using (ExcelPackage xlPackage = new ExcelPackage(new FileInfo(@"..\..\..\Resources\Scrabblator.xlsx")))
+                {
+                    ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+                    var myWorksheet = xlPackage.Workbook.Worksheets.First(); //select sheet here
+                    var totalRows = myWorksheet.Dimension.End.Row;
+                    var totalColumns = myWorksheet.Dimension.End.Column;
+
+                    dok = new List<string>();
+                    var rowDok = myWorksheet.Cells[1, 1, 1, totalColumns].Select(c => c.Value == null ? string.Empty : c.Value.ToString()).ToList();
+                    foreach (var cell in rowDok)
+                    {
+                        if (!String.IsNullOrWhiteSpace(cell))
+                            dok.Add("a" + cell);
+                    }
+
+                    plansza = new string[totalRows - 1, totalColumns];
+                    for (int rowNum = 2; rowNum <= totalRows; rowNum++) //select starting row here
+                    {
+                        var row = myWorksheet.Cells[rowNum, 1, rowNum, totalColumns].Select(c => c.Value == null ? string.Empty : c.Value.ToString()).ToList();
+                        for (int i = 0; i < row.Count; i++)
+                        {
+                            if (!String.IsNullOrWhiteSpace(row[i]))
+                                plansza[rowNum - 2, i] = "a" + row[i];
+                            else
+                                plansza[rowNum - 2, i] = "pb";
+                        }
+                    }
+                }
+
+                scrabblator.scrabbluj(plansza, dok);
+                Console.ReadLine();
+                scrabblator.zatrzymaj();
+            }
         }
 
     }

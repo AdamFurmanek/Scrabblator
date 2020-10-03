@@ -37,35 +37,36 @@ namespace Scrabblator
 
         public void generuj()
         {
-
+            int wysokosc = plansza.GetUpperBound(0) + 1;
+            int szerokosc = plansza.GetUpperBound(1) + 1;
             jakichkolwiek = 0;
             dobrych = 0;
             najlepszyWynik = 0;
 
-            for (int i = 0; i < 15; i++)
+            for (int i = 0; i < wysokosc; i++)
             {
-                for (int j = 0; j < 15; j++)
+                for (int j = 0; j < szerokosc; j++)
                 {
                     for (int k = 0; k < dok.Count; k++)
                     {
                         if (!scrabblator.kontynuuj)
                             return;
                         int l1 = 0, l2 = 0;
-                        for (int m = 0; m < 15; m++)
-                            for (int n = 0; n < 15; n++)
+                        for (int m = 0; m < wysokosc; m++)
+                            for (int n = 0; n < szerokosc; n++)
                                 uklad[m,n] = 0;
 
                         while (l1 != k + 1)
                         {
-                            if (j + l2 >= 15)
+                            if (j + l2 >= wysokosc)
                                 break;
                             while (plansza[i,j + l2][0] != 'p')
                             {
                                 l2++;
-                                if (j + l2 >= 15)
+                                if (j + l2 >= szerokosc)
                                     break;
                             }
-                            if (j + l2 >= 15)
+                            if (j + l2 >= szerokosc)
                                 break;
                             uklad[i,j + l2] = 1;
                             l1++;
@@ -77,16 +78,16 @@ namespace Scrabblator
                             przeslij(l1, true);
                         }
 
-                        if (j + l2 >= 15)
+                        if (j + l2 >= wysokosc)
                             break;
                     }
                 }
             }
 
 
-            for (int i = 0; i < 15; i++)
+            for (int i = 0; i < wysokosc; i++)
             {                       //kolumny
-                for (int j = 0; j < 15; j++)
+                for (int j = 0; j < szerokosc; j++)
                 {                   //wiersz
                     for (int k = 0; k < dok.Count; k++)
                     {
@@ -94,21 +95,21 @@ namespace Scrabblator
                             return;
                         //ile liter
                         int l1 = 0, l2 = 0;                 //l1 - trzyma liczbe liter do postawienia     l2 - trzyma miejsce w ktorym ma byc polozona
-                        for (int m = 0; m < 15; m++)
-                            for (int n = 0; n < 15; n++)
+                        for (int m = 0; m < wysokosc; m++)
+                            for (int n = 0; n < szerokosc; n++)
                                 uklad[m,n] = 0;
 
                         while (l1 != k + 1)
                         {
-                            if (j + l2 >= 15)
+                            if (j + l2 >= wysokosc)
                                 break;
                             while (plansza[j + l2,i][0] != 'p')
                             {
                                 l2++;
-                                if (j + l2 >= 15)
+                                if (j + l2 >= szerokosc)
                                     break;
                             }
-                            if (j + l2 >= 15)
+                            if (j + l2 >= szerokosc)
                                 break;
                             uklad[j + l2,i] = 1;
                             l1++;
@@ -120,7 +121,7 @@ namespace Scrabblator
                             przeslij(l1, false);
                         }
 
-                        if (j + l2 >= 15)
+                        if (j + l2 >= wysokosc)
                             break;
                     }
                 }
@@ -129,14 +130,16 @@ namespace Scrabblator
 
         private void przeslij(int l1, bool poziomo)
         {
+            int wysokosc = plansza.GetUpperBound(0) + 1;
+            int szerokosc = plansza.GetUpperBound(1) + 1;
 
             String[,] nowaPlansza = new String[plansza.GetUpperBound(0) + 1, plansza.GetUpperBound(1) + 1];
             for (int p = 0; p < twory[l1 - 1].Count; p++)
             {
                 int k = 0;
-                for (int i = 0; i < 15; i++)
+                for (int i = 0; i < wysokosc; i++)
                 {
-                    for (int j = 0; j < 15; j++)
+                    for (int j = 0; j < szerokosc; j++)
                     {
                         if (uklad[i, j] == 1)
                         {
@@ -163,16 +166,25 @@ namespace Scrabblator
                         Console.WriteLine("Wynik: " + najlepszyWynik);
 
                         /////WYPISYWANIE
-                        for (int x = 0; x < 15; x++)
+                        for (int x = 0; x < wysokosc; x++)
                         {
-                            for (int y = 0; y < 15; y++)
+                            for (int y = 0; y < szerokosc; y++)
                             {
                                 if (najlepszaPlansza[x, y][0] == 'a')
+                                {
+                                    if (this.uklad[x, y] == 1)
+                                        Console.ForegroundColor = ConsoleColor.Red;
+                                    else
+                                        Console.ForegroundColor = ConsoleColor.Cyan;
+
                                     Console.Write(najlepszaPlansza[x, y][1] + " ");
+                                }
                                 else
                                 {
+                                    Console.ForegroundColor = ConsoleColor.Gray;
                                     Console.Write(". ");
                                 }
+                                Console.ForegroundColor = ConsoleColor.Gray;
                             }
                             Console.WriteLine();
                         }
@@ -186,10 +198,12 @@ namespace Scrabblator
 
         private bool sprawdzPrzystawanie()
         {
+            int wysokosc = plansza.GetUpperBound(0) + 1;
+            int szerokosc = plansza.GetUpperBound(1) + 1;
 
-            for (int i = 0; i < 15; i++)
+            for (int i = 0; i < wysokosc; i++)
             {
-                for (int j = 0; j < 15; j++)
+                for (int j = 0; j < szerokosc; j++)
                 {
                     if (uklad[i, j] == 1)
                     {

@@ -41,6 +41,10 @@ namespace Scrabblator
 
 		private bool sprawdzKomorke(int i, int j, String[,] nowaPlansza)
 		{
+
+			int wysokosc = nowaPlansza.GetUpperBound(0) + 1;
+			int szerokosc = nowaPlansza.GetUpperBound(1) + 1;
+
 			String napis, napis2;
 			napis=nowaPlansza [i,j][1]+"";
 			int k = i;
@@ -49,9 +53,9 @@ namespace Scrabblator
 				napis=nowaPlansza[k,j][1]+napis;
 			}
 			k=i;
-			while(k<14&&nowaPlansza[k + 1,j][0]!='p') {
+			while(k < (wysokosc-1) &&nowaPlansza[k + 1,j][0]!='p') {
 				k++;
-				napis+=nowaPlansza[k,j][1];
+				napis += nowaPlansza[k,j][1];
 			}
 
 			napis2 = nowaPlansza[i,j][1] + "";
@@ -62,7 +66,7 @@ namespace Scrabblator
 				napis2 = nowaPlansza[i,k][1] + napis2;
 			}
 			k = j;
-			while (k < 14 && nowaPlansza[i,k + 1][0] != 'p')
+			while (k < (szerokosc-1) && nowaPlansza[i,k + 1][0] != 'p')
 			{
 				k++;
 				napis2 += nowaPlansza[i,k][1];

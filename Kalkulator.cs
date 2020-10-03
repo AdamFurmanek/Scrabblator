@@ -74,6 +74,8 @@ namespace Scrabblator
 
         public int obliczKomorkePoziomo(int i, int j)
         {
+            int szerokosc = nowaPlansza.GetUpperBound(1) + 1;
+
             wynikKomorki = 0;
             mnoznik = 1;
             int k = j;
@@ -88,7 +90,7 @@ namespace Scrabblator
                 wynikKomorki += bonusyLiter[nowaPlansza[i, k][1]][1];
             }
             k = j;
-            while (k < 14 && nowaPlansza[i, k + 1][0] != 'p')
+            while (k < (szerokosc-1) && nowaPlansza[i, k + 1][0] != 'p')
             {
                 k++;
                 if (uklad[i, k] == 1 && bonusyMapy[i, k][0] != '0')
@@ -106,7 +108,7 @@ namespace Scrabblator
                 napis= nowaPlansza[i, k][1] + napis;
             }
             k = j;
-            while (k < 14 && nowaPlansza[i, k + 1][0] != 'p')
+            while (k < (szerokosc - 1) && nowaPlansza[i, k + 1][0] != 'p')
             {
                 k++;
                 napis += nowaPlansza[i, k][1];
@@ -124,6 +126,7 @@ namespace Scrabblator
         }
         public int obliczKomorkePionowo(int i, int j)
         {
+            int wysokosc = nowaPlansza.GetUpperBound(0) + 1;
             wynikKomorki = 0;
             mnoznik = 1;
             int k = i;
@@ -138,7 +141,7 @@ namespace Scrabblator
                     wynikKomorki += bonusyLiter[nowaPlansza[k, j][1]][1];
             }
             k = i;
-            while (k < 14 && nowaPlansza[k + 1, j][0] != 'p')
+            while (k < (wysokosc-1) && nowaPlansza[k + 1, j][0] != 'p')
             {
                 k++;
                 if (uklad[k, j] == 1 && bonusyMapy[k, j][0] != '0')
@@ -157,7 +160,7 @@ namespace Scrabblator
                 napis = nowaPlansza[k, j][1] + napis;
             }
             k = i;
-            while (k < 14 && nowaPlansza[k + 1, j][0] != 'p')
+            while (k < (wysokosc - 1) && nowaPlansza[k + 1, j][0] != 'p')
             {
                 k++;
                 napis += nowaPlansza[k, j][1];
