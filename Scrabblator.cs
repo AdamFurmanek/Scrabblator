@@ -59,7 +59,20 @@ namespace Scrabblator
 
         static void Main(string[] args)
         {
+            new Configuration("siemka");
+            /*
+            Dictionary dictionary = new Dictionary();
 
+            StreamReader streamReader = new StreamReader(new FileStream(@"..\..\..\Resources\Slownik.txt", FileMode.Open, FileAccess.Read));
+            String word;
+            while ((word = streamReader.ReadLine()) != null)
+            {
+                dictionary.Insert(word);
+            }
+            streamReader.Close();
+            */
+
+            /*
             //USTAWIENIA DLA KURNIKA
             string[,] bonusyMapy = {
                 {"34", "00", "30", "00", "00", "32", "00", "34", "00", "32", "00", "00", "30", "00", "34", },
@@ -172,6 +185,8 @@ namespace Scrabblator
                 Console.ReadLine();
                 scrabblator.zatrzymaj();
             }
+
+            */
         }
 
     }
